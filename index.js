@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer, gql, UserInputError } from 'apollo-server';
 import {v1 as uuid} from 'uuid';
 
 let employees =[
@@ -52,6 +52,12 @@ let employees =[
 //to describe the data:
 const typeDefs = gql`
 
+
+    enum YesNo {
+        YES
+        NO
+    }
+
     type Address{
         street: String!
         city: String!
@@ -67,12 +73,13 @@ const typeDefs = gql`
 
     type Query {
         employeesCount: Int!
-        allEmployees: [Employee]!
+        allEmployees(phone: YesNo): [Employee]!
         findEmployee (name: String!): Employee
 
     }
 
     type Mutation {
+
         addEmployee(
             name: String!
             age: Int!
@@ -80,6 +87,12 @@ const typeDefs = gql`
             street:String!
             city:String!
         ):Employee
+
+        editPhoneNumber(
+            name:String!
+            phone:String!
+        ): Employee
+
     }
 
 
@@ -91,7 +104,15 @@ const typeDefs = gql`
 const resolvers = {
     Query: {
         employeesCount: ()=>employees.length,
-        allEmployees: ()=> employees,
+        allEmployees: ()=>employees,
+        allEmployees: (root, args)=> {
+/*             if(!args.phone) return employees
+ */
+            const byPhone= employee => (args.phone === "YES") ? employee.phone : !employee.phone
+
+            return employees.filter(byPhone)
+            
+        }, 
         findEmployee: (root, args)=> {
             const {name} =args;
             return employees.find(employee => employee.name === name)
@@ -99,13 +120,29 @@ const resolvers = {
     },
     Mutation: {
         addEmployee: (root, args)=>{
+            if(employees.find(employee => employee.name === args.name)){
+                throw new UserInputError("Name must be unique",{
+                    invalidArgs: args.name
+                })
+            }
             //const {name,age, street, city, phone} =args
             const newEmployee= {...args, id: uuid()}
             employees.push(newEmployee);// update database with new employee
             return newEmployee;
 
-        }
+        },
 
+        editPhoneNumber: (root, args)=>{
+            const employeeIndex = employees.findIndex( employee => employee.name === args.name)
+            if (employeeIndex === -1) return null
+            const employee = employees[employeeIndex]
+            const updatedPhoneNumber= {...employee, phone: args.phone}
+            employees[employeeIndex]= updatedPhoneNumber
+            return updatedPhoneNumber
+
+
+
+        }
     }
     ,
     Employee: {
