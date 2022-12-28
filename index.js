@@ -104,10 +104,10 @@ const typeDefs = gql`
 const resolvers = {
     Query: {
         employeesCount: ()=>employees.length,
-        allEmployees: ()=>employees,
+        /* allEmployees: ()=>employees, */
         allEmployees: (root, args)=> {
-/*             if(!args.phone) return employees
- */
+            if(!args.phone) return employees
+ 
             const byPhone= employee => (args.phone === "YES") ? employee.phone : !employee.phone
 
             return employees.filter(byPhone)
