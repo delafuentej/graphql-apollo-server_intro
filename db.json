@@ -1,0 +1,35 @@
+{
+    "employees": [
+        {
+          "name": "Molecule Man",
+          "age": 29,
+          "phone":"011-001111001100111",
+          "street":"micumaci topocomocho",
+          "city":"Saturn",     
+          "id":"uyio-48y4-14bg"
+
+
+
+        },
+        {
+          "name": "Madame Uppercut",
+          "age": 39,          
+          "phone":"011-0101010101010101",
+          "street":"artariki batasuna-batuta",
+          "city":"Jupiter",
+          "id":"8745-jhbg-18ie"
+
+        },
+        {
+          "name": "Eternal Flame",
+          "age": 1000000,
+          "street":"tocomotxo kalimotxo",
+          "city":"Bilbao",
+          "id":"82nm-jht5-1tr9"
+
+        }
+      ]
+}
+    
+    
+  
